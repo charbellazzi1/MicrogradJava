@@ -48,10 +48,13 @@ public class Value{
         HashSet<Value> n= new HashSet<Value>();
         n.add(this);
         Value others;
-        if(!(other instanceof Value)){
-            others=new Value((float)other);
-        }else{
-        others=(Value)other;
+        if (other instanceof Value) {
+            others = (Value) other;
+        } else if (other instanceof Number) {
+            float t = ((Number) other).floatValue();
+            others = new Value(t);
+        } else {
+            throw new IllegalArgumentException("Unsupported type for multiplication");
         }
         n.add(others);
         
@@ -66,10 +69,13 @@ public class Value{
         HashSet<Value> n= new HashSet<Value>();
         n.add(this);
         Value others;
-        if(!(other instanceof Value)){
-            others=new Value((float)other);
-        }else{
-        others=(Value)other;
+        if (other instanceof Value) {
+            others = (Value) other;
+        } else if (other instanceof Number) {
+            float t = ((Number) other).floatValue();
+            others = new Value(t);
+        } else {
+            throw new IllegalArgumentException("Unsupported type for multiplication");
         }
         n.add(others);
         Value out= new Value( this.data*others.data,n ,'*');
@@ -93,10 +99,13 @@ public class Value{
         HashSet<Value> n= new HashSet<Value>();
         n.add(this);
         Value others;
-        if(!(other instanceof Value)){
-            others=new Value((float)other);
-        }else{
-        others=(Value)other;
+        if (other instanceof Value) {
+            others = (Value) other;
+        } else if (other instanceof Number) {
+            float t = ((Number) other).floatValue();
+            others = new Value(t);
+        } else {
+            throw new IllegalArgumentException("Unsupported type for multiplication");
         }
         n.add(others);
         Value out= new Value((float)Math.pow(this.data,others.data),n,'^');
@@ -106,15 +115,26 @@ public class Value{
         };
         return out;
     }
-    public Value divide(Value other){
+    public Value divide(Object other){
         HashSet<Value> n= new HashSet<Value>();
         n.add(this);
+        Value others;
+        if (other instanceof Value) {
+            others = (Value) other;
+        } else if (other instanceof Number) {
+            float t = ((Number) other).floatValue();
+            others = new Value(t);
+        } else {
+            throw new IllegalArgumentException("Unsupported type for multiplication");
+        }
+        n.add(others);
         Value exp=new Value(-1.0f);
-        Value exp2=other.pow(exp);
-        Value out=new Value(this.data * exp2.data);
+        Value exp2=others.pow(exp);
+        Value out=new Value(this.data * exp2.data,n,'/');
         out._backward=()->{
             this.grad+=exp2.data*out.grad;
-            other.grad=(-1.0f*this.data/(other.data*other.data))*out.grad;
+            others.grad=(-1.0f*this.data/(others.data*others.data))*out.grad;
+        
         };
         return out;
     }

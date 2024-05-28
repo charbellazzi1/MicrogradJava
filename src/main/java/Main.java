@@ -12,14 +12,15 @@ public class Main {
         Value w1x1_w2x2=w1x1.add(w2x2);
         Value b = new Value(6.8814f);
         Value n=w1x1_w2x2.add(b);
-        Value out=n.tanh();
+        Value e=n.multiply(2).exp();
+        Value out=(e.add(-1)).divide(e.add(1)); // same as using n.tanh()
         out.backward();
-        System.out.println("x1.grad="+x1.grad);
-        System.out.println("x2.grad="+x2.grad);
-        System.out.println("w1.grad="+w1.grad);
-        System.out.println("w2.grad="+w2.grad);
-        System.out.println("b.grad="+b.grad);
-        System.out.println("w1x1+w2x2 grad="+w1x1_w2x2.grad);
+         System.out.println("x1.grad="+x1.grad);
+         System.out.println("x2.grad="+x2.grad);
+         System.out.println("w1.grad="+w1.grad);
+         System.out.println("w2.grad="+w2.grad);
+         System.out.println("b.grad="+b.grad);
+         System.out.println("w1x1+w2x2 grad="+w1x1_w2x2.grad);
         
     }
 }
