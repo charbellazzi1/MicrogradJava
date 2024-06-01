@@ -42,7 +42,7 @@ public class Value{
     }
     
     public String toString(){
-        return "Value="+ data;
+        return "Value="+ data+" grad="+this.grad;
     }
     public Value add(Object other){
         HashSet<Value> n= new HashSet<Value>();
@@ -154,11 +154,13 @@ public class Value{
         HashSet<Value> visited = new HashSet<Value>();
         Value[] topo=new Value[0];
         topo=this.buildTopo(visited,topo);
-        System.out.println("length="+topo.length);
+        //System.out.println("length="+topo.length);
         for(int i=topo.length-1;i>=0;i--){
             topo[i]._backward.run();
-            System.out.println("data="+topo[i].data);
-        }
+        //     if(topo[i].label!=null){
+        //     System.out.println("data="+topo[i].data +"grad="+topo[i].grad+"label="+topo[i].label);
+        // }
+    }
     }
     public Value[] buildTopo(HashSet<Value> visited,Value[] topo){
         if(visited.contains(this)){

@@ -1,26 +1,43 @@
 
 public class Main {
     public static void main(String[] args) {
-        Value w2= new Value(1.0f);
-        Value x2=new Value(0f);
-        Value w1=new Value(-3.0f);
-        Value x1=new Value(2.0f);
-        Value w1x1=w1.multiply(x1);
+       
+        MLP n=new MLP(3,new int[]{4,4,1});
         
-        Value w2x2=w2.multiply(x2);
-        
-        Value w1x1_w2x2=w1x1.add(w2x2);
-        Value b = new Value(6.8814f);
-        Value n=w1x1_w2x2.add(b);
-        Value e=n.multiply(2).exp();
-        Value out=(e.add(-1)).divide(e.add(1)); // same as using n.tanh()
-        out.backward();
-         System.out.println("x1.grad="+x1.grad);
-         System.out.println("x2.grad="+x2.grad);
-         System.out.println("w1.grad="+w1.grad);
-         System.out.println("w2.grad="+w2.grad);
-         System.out.println("b.grad="+b.grad);
-         System.out.println("w1x1+w2x2 grad="+w1x1_w2x2.grad);
+        float [][]xs={{2.0f,3.0f,-1.0f},{3.0f,-1.0f,0.5f},{0.5f,1.0f,1.0f},{1.0f,1.0f,-1.0f}};
+       
+        Value []ys={new Value(1.0f),new Value(-1.0f),new Value(-1.0f),new Value(1.0f)};
+       
+        Value y[]=new Value[xs.length];
+        int j;
+        //training
+        Value loss[];
+        for (int k = 0; k < 30; k++) {
+            Value totalLoss=new Value(0.0f);
+            j=0;
+            for(float[]x :xs){
+                y[j]=n.call(x)[0];
+    
+                j++;
+            }
+           
+            
+            loss=new Value[xs.length];
+            for(int i=0;i<loss.length;i++){
+                loss[i]=(ys[i].add(y[i].multiply(-1))).multiply((ys[i].add(y[i].multiply(-1))));
+                totalLoss=totalLoss.add(loss[i]);
+            }
+           
+            totalLoss.backward();
+            System.out.println("total loss="+totalLoss);
+            Value[] p=n.parameters();
+            for(Value i:p){
+                i.data+=-0.08*i.grad;
+                i.grad=0.0f;
+                
+            }            
+            
+        }
         
     }
 }
